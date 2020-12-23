@@ -110,7 +110,9 @@ userSchema.pre("save", async function (next) {
 
 userSchema.pre("remove", async function (next) {
   const user = this;
+  if(!user.type) next()
   await Company.deleteMany({ manager_id: user._id });
+  await User.deleteMany({manager_id: user._id})
   next();
 });
 userSchema.methods.toJSON = function () {
