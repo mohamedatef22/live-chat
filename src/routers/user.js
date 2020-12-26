@@ -2,7 +2,9 @@ const express = require("express");
 const router = express.Router();
 const User = require("../modules/user");
 const auth = require("../middleware/auth");
+const Company = require('../modules/company')
 
+/// tested: register manager ///
 router.post("/m/register", async (req, res) => {
   // m for manager
   try {
@@ -36,6 +38,7 @@ router.post("/m/register", async (req, res) => {
   }
 });
 
+/// tested: add employee , auth for manegar that own the company ///
 router.post("/m/employee/add", auth, async (req, res) => {
   try {
     const userKeys = Object.keys(req.body);
@@ -46,6 +49,23 @@ router.post("/m/employee/add", auth, async (req, res) => {
         status: "4", // 4 is not allowed
         data: {},
         msg: "not allowed to register with this property",
+      });
+      return;
+    }
+    const comp = await Company.findById(req.body.company_id)
+    if(!comp){
+      res.status(400).send({
+        status: "4", // 4 is not allowed
+        data: {},
+        msg: "no company with this id",
+      });
+      return;
+    }
+    if(comp.manager_id.toString() != req.data._id.toString()){
+      res.status(400).send({
+        status: "4", // 4 is not allowed
+        data: {},
+        msg: "not allowed to add to this company",
       });
       return;
     }
@@ -74,6 +94,7 @@ router.post("/m/employee/add", auth, async (req, res) => {
   }
 });
 
+/// tested: delete manager , auth for only manager ///
 router.delete('/m/delete/:id',auth,async (req,res)=>{
   try {
     if(req.data._id.toString() != req.params.id.toString()){
@@ -102,6 +123,7 @@ router.delete('/m/delete/:id',auth,async (req,res)=>{
   }
 })
 
+/// tested: view employee , auth for only manager ///
 router.get('/m/employee/view/:id',auth,async(req,res)=>{
   try {
     const employee = await User.findById(req.params.id)
@@ -137,6 +159,7 @@ router.get('/m/employee/view/:id',auth,async(req,res)=>{
   }
 })
 
+/// tested: delete employee , auth for only manager ///
 router.delete('/m/employee/delete/:id',auth,async(req,res)=>{
   try {
     const employee = await User.findById(req.params.id)
@@ -173,6 +196,7 @@ router.delete('/m/employee/delete/:id',auth,async(req,res)=>{
   }
 })
 
+/// tested : login , if the status is false the login will failed ///
 router.post('/login',async (req,res)=>{
     try {
         const user = await User.login(req.body.user,req.body.password)

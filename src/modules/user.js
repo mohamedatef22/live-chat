@@ -110,7 +110,7 @@ userSchema.pre("save", async function (next) {
 
 userSchema.pre("remove", async function (next) {
   const user = this;
-  if(!user.type) next()
+  if(!user.type) next() /* required deleting rate , if i created rate */
   await Company.deleteMany({ manager_id: user._id });
   await User.deleteMany({manager_id: user._id})
   next();
@@ -157,3 +157,5 @@ userSchema.methods.generateToken = async function () {
 
 const User = mongoose.model("User", userSchema);
 module.exports = User;
+
+/* required // need to not send emplyess every time */
