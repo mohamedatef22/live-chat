@@ -36,7 +36,7 @@ router.post("/c/add", auth, async (req, res) => {
   }
 });
 
-/// tested: view company , auth for only owner to view company /// 
+/// tested: view company , auth for only owner to view company /** required return employess and their number */ /// 
 router.get("/c/view/:id", auth, async (req, res) => {
   try {
     const comp = await Company.findById(req.params.id);

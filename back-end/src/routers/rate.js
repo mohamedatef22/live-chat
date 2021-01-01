@@ -16,15 +16,15 @@ router.get("/rate/:id", auth, async (req, res) => {
       return;
     }
     /* required auth for manager */
-    const user = await User.findById(rate.userID);
-    if (user.manager_id.toString() != req.data._id.toString()) {
-      res.status(400).send({
-        status: "4",
-        data: {},
-        msg: "not autharized to get this rate",
-      });
-      return;
-    }
+    // const user = await User.findById(rate.userID);
+    // if (user.manager_id.toString() != req.data._id.toString()) {
+    //   res.status(400).send({
+    //     status: "4",
+    //     data: {},
+    //     msg: "not autharized to get this rate",
+    //   });
+    //   return;
+    // }
     res.status(200).send({
       status: "2",
       data: rate,

@@ -29,7 +29,8 @@ const companySchema = new mongoose.Schema({
             required:true
         },
         chat_id:{
-            type:mongoose.Types.ObjectId
+            type:mongoose.Types.ObjectId,
+            required:true
         }
     }]
 

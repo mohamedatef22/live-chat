@@ -88,7 +88,7 @@ const userSchema = new mongoose.Schema({
   ],
   company_id: {
     type: mongoose.Types.ObjectId,
-    ref: "Company",
+    // ref: "Company",
   },
 });
 userSchema.virtual("Company", {

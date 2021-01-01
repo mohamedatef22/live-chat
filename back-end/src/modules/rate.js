@@ -47,6 +47,7 @@ rateSchema.pre("save", async function (next) {
       chat.fourStar * 4 +
       chat.fiveStar * 5;
     chat.totalRate = chat.totalRate / total;
+    await chat.save()
   }
   next();
 });
