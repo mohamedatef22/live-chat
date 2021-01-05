@@ -40,6 +40,14 @@ router.post("/c/add", auth, async (req, res) => {
 router.get("/c/view/:id", auth, async (req, res) => {
   try {
     const comp = await Company.findById(req.params.id);
+    if (!comp) {
+      res.status(404).send({
+        status: "2",
+        data: {},
+        msg: "not found",
+      });
+      return;
+    }
     if (comp.manager_id.toString() != req.data._id) {
       res.status(400).send({
         status: "4",
@@ -48,24 +56,20 @@ router.get("/c/view/:id", auth, async (req, res) => {
       });
       return;
     }
-    if (!comp) {
-      res.status(200).send({
-        status: "2",
-        data: {},
-        msg: "not found",
-      });
-      return;
-    }
+    let emp = [] ; 
+    req.data.employees.forEach(element => {
+      if(element.company_id.toString() == comp._id.toString()) emp.push(element)
+    })
     res.status(200).send({
       status: "2",
-      data: comp,
+      data: {company:comp,employess:emp},
       msg: "company retrived successfuly",
     });
     return;
   } catch (e) {
     res.status(500).send({
       status: "5",
-      data: {},
+      data: e,
       msg: "failed to get company",
     });
     return;
@@ -148,6 +152,59 @@ router.post("/c/live/:id", async (req, res) => {
   }
 });
 
+router.get('/c/all',auth,async(req,res)=>{
+  try {
+    const comp = await Company.find({manager_id:req.data._id});
+    res.status(200).send({
+      status: "2",
+      data: comp,
+      msg: "company retrived successfuly",
+    });
+    return;
+  } catch (e) {
+    res.status(500).send({
+      status: "5",
+      data: {},
+      msg: "failed to get company",
+    });
+    return;
+  }  
+})
 /// required delete company 
-
+router.delete("/c/delete/:id", auth, async (req, res) => {
+  try {
+    const comp = await Company.findById(req.params.id);
+    if (!comp) {
+      res.status(404).send({
+        status: "2",
+        data: {},
+        msg: "not found",
+      });
+      return;
+    }
+    if (comp.manager_id.toString() != req.data._id) {
+      res.status(400).send({
+        status: "4",
+        data: {},
+        msg: "not authorized to delete this company",
+      });
+      return;
+    }
+    await comp.remove()
+    res.status(200).send({
+      status: "2",
+      data: {},
+      msg: "company deleted successfuly",
+    });
+    return;
+  } catch (e) {
+    console.log(e);
+    res.status(500).send({
+      status: "5",
+      data: e,
+      msg: "failed to delete company",
+    });
+    return;
+  }
+});
 module.exports = router;

@@ -1,0 +1,83 @@
+<section *ngIf="flag;else elseSection">
+  <div *ngFor="let comp of companies">
+    <p>
+      {{comp.name}}
+    </p>
+    <button class="btn btn-primary" routerLink="/company/{{comp._id}}">Show</button>
+  </div>
+</section>
+
+<ng-template #elseSection>
+  <section class="container my-5">
+    <div class="row justify-content-center">
+      <button type="button" class="btn btn-primary col-2" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Add Employee
+      </button>
+      <button class="btn btn-danger col-2" (click)="deleteCompany()">delete company</button>
+    </div>
+
+    <div>
+        {{companies?.name}}
+    </div>
+    <div *ngFor="let emp of employess">
+        <!-- {{emp|json}} -->
+        <div>
+            {{emp.name}}
+        </div>
+        <div>
+            {{emp.email}}
+        </div>
+        <div>
+            {{emp.workingHour}}
+        </div>
+
+        <button class="btn btn-primary" routerLink="/employee/{{emp._id}}" [state]='{emp:emp}'>view</button>
+    </div>
+  </section>
+
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Adding Employee</h5>
+          <button #closeButton type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="name" class="form-label">Company name</label>
+            <input type="text" class="form-control" value="{{companies?.name}}" disabled>
+          </div>
+          <form [formGroup]="registerForm" (ngSubmit)="register()">
+
+            <div class="mb-3">
+              <label for="name" class="form-label">Name</label>
+              <input type="text" class="form-control" id="name" formControlName='name' placeholder="Name">
+            </div>
+
+            <div class="mb-3">
+              <label for="userName" class="form-label">User Name</label>
+              <input type="text" class="form-control" id="userName" formControlName='userName' placeholder="User name">
+            </div>
+
+            <div class="mb-3">
+              <label for="email" class="form-label">Email address</label>
+              <input type="email" class="form-control" id="email" formControlName='email' placeholder="Email">
+            </div>
+
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="password" formControlName='password'
+                placeholder="Password">
+            </div>
+
+            <div class="row justify-content-center">
+              <button type="submit" class="btn btn-outline-primary align-self-center col-2">Register</button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,8 @@
+<p>{{ emp.emp?.name }}</p>
+<p>{{ emp.emp?.email }}</p>
+<p>{{ emp.emp?.workingHour }}</p>
+<p>{{ emp.emp?.status }}</p>
+
+<button class="btn" [ngClass]="!emp.emp?.status?'btn-success':'btn-danger'" [innerText]="emp.emp?.status?'deactivate':'activate'" (click)='changeStatus()'></button>
+
+<button class="btn btn-danger" (click)="deleteEmp()">Delete employee</button>

@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const User = require('./user')
 const validator = require('validator')
 
 const companySchema = new mongoose.Schema({
@@ -38,9 +37,15 @@ const companySchema = new mongoose.Schema({
 
 companySchema.pre('remove',async function(next){
     const company = this
-    company.employees.forEach(async (emp) => {
-        await User.findByIdAndDelete(emp.employee_id)
-    });
+    const User = require('./user')
+    const emps = await User.deleteMany({'company_id':company._id})
+    const manager = await User.findById(company.manager_id)
+    for(let i=manager.employees.length-1;i>=0;i--){
+      if(manager.employees[i].company_id.toString() == company._id.toString()){
+        manager.employees.splice(i, 1);
+      }
+    }
+    await manager.save()
     next()
 })
 

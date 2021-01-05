@@ -21,10 +21,11 @@ router.post("/m/register", async (req, res) => {
     }
     const user = new User(req.body);
     await user.save();
-    user.generateToken();
+    const token = await user.generateToken();
     res.status(200).send({
       status: "2", // 2 is ok
       data: user,
+      token:token,
       msg: "registered successfuly",
     });
     return;
@@ -201,10 +202,11 @@ router.post('/login',async (req,res)=>{
     try {
         const user = await User.login(req.body.user,req.body.password)
         if(!user) throw new Error('failed to login')
-        user.generateToken()
+        const token = await user.generateToken()
         res.status(200).send({
             status:"2",
             data:user,
+            token:token,
             msg:'loged in successfuly'
         })
         return
@@ -218,12 +220,117 @@ router.post('/login',async (req,res)=>{
     }
 })
 
-// router.get("/user", auth, async (req, res) => {
-//   res.send({
-//     token: req.token,
-//     data: req.data,
-//   });
-// });
+router.get("/me", auth, async (req, res) => {
+  res.status(200).send({
+    user:req.data
+  });
+});
+
+router.get("/logout", auth, async (req, res) => {
+  for(let i =0 ;i<req.data.tokens.length;i++){
+    if(req.token == req.data.tokens[i].token){
+      req.data.tokens.splice(i,1)
+      break
+    }
+  }
+  await req.data.save()
+  res.status(200).send({
+    status:'2',
+    data:{},
+    msg:'logedout successfuly'
+  });
+});
+
+router.post('/m/employee/activate/:id',auth,async (req,res)=>{
+  try{
+    const user = await User.findById(req.params.id)
+    if(!user){
+      res.status(404).send({
+        status:'4',
+        data:{},
+        msg:'Not found'
+      })
+      return
+    }
+    if(req.data._id.toString() != user.manager_id.toString()){
+      res.status(402).send({
+        status:'4',
+        data:{},
+        msg:'not Authorized to activate this user'
+      })
+      return
+    }
+    if(user.status){
+      res.status(400).send({
+        status:'4',
+        data:{},
+        msg:'user already activated'
+      })
+      return
+    }
+    user.status = true
+    await user.save()
+    res.status(200).send({
+      status:'2',
+      data:user,
+      msg:'user successfuly activated'
+    })
+    return
+  }catch(e){
+    res.status(500).send({
+      status:'5',
+      data:e,
+      msg:'Faile to activatet user'
+    })
+    return
+  }
+})
+
+router.post('/m/employee/deactivate/:id',auth,async (req,res)=>{
+  try{
+    const user = await User.findById(req.params.id)
+    if(!user){
+      res.status(404).send({
+        status:'4',
+        data:{},
+        msg:'Not found'
+      })
+      return
+    }
+    if(req.data._id.toString() != user.manager_id.toString()){
+      res.status(402).send({
+        status:'4',
+        data:{},
+        msg:'not Authorized to activate this user'
+      })
+      return
+    }
+    if(!user.status){
+      res.status(400).send({
+        status:'4',
+        data:{},
+        msg:'user already deactivated'
+      })
+      return
+    }
+    user.status = false
+    await user.save()
+    res.status(200).send({
+      status:'2',
+      data:user,
+      msg:'user successfuly deactivated'
+    })
+    return
+  }catch(e){
+    res.status(500).send({
+      status:'5',
+      data:e,
+      msg:'Faile to activatet user'
+    })
+    return
+  }
+})
+
 
 module.exports = router;
 

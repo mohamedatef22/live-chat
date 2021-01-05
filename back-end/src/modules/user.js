@@ -110,7 +110,17 @@ userSchema.pre("save", async function (next) {
 
 userSchema.pre("remove", async function (next) {
   const user = this;
-  if(!user.type) next() /* required deleting rate , if i created rate */
+  if(!user.type){ /* required deleting rate , if i created rate */
+    const manager = await User.findById(user.manager_id)
+    for(let i=0;i<manager.employees.length;i++){
+      if(manager.employees[i].employee_id.toString() == user._id.toString()){
+        manager.employees.splice(i, 1);
+        break
+      }
+    }
+    await manager.save()
+    next()
+  } 
   await Company.deleteMany({ manager_id: user._id });
   await User.deleteMany({manager_id: user._id})
   next();
@@ -144,7 +154,7 @@ userSchema.methods.generateToken = async function () {
   const token = jwt.sign({ _id: user._id.toString() }, "MyNameIsM");
   user.tokens.push({ token });
   await user.save();
-  return token;
+  return `Bearer ${token}`;
 };
 
 // userSchema.methods.addEmployee = async function(employee,company_id){

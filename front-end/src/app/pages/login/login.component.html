@@ -1,0 +1,19 @@
+<section class="container my-5">
+  <form [formGroup]="loginForm" (ngSubmit)="login()">
+
+    <div class="mb-3">
+      <label for="user" class="form-label">User Name or Email</label>
+      <input type="text" class="form-control" id="user" formControlName='user' placeholder="User Name or Email">
+    </div>
+
+    <div class="mb-3">
+      <label for="password" class="form-label">Password</label>
+      <input type="password" class="form-control" id="password" formControlName='password' placeholder="Password">
+    </div>
+
+    <div class="row justify-content-center">
+      <button type="submit" class="btn btn-outline-warning align-self-center col-2">login</button>
+    </div>
+
+  </form>
+</section>
