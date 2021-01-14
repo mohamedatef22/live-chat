@@ -6,10 +6,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-
+  type:Boolean
   constructor() { }
 
   ngOnInit(): void {
+    this.type = JSON.parse(sessionStorage.getItem('user')).type
   }
 
 }

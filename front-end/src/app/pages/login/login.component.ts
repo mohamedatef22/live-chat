@@ -20,7 +20,8 @@ export class LoginComponent implements OnInit {
     console.log(this.loginForm.value)
     this._user.login(this.loginForm.value).subscribe(data=>{
       console.log(data.msg);
-      localStorage.setItem('token',`${data.token}`);  
+      localStorage.setItem('token',`${data.token}`);
+      sessionStorage.setItem('user',JSON.stringify(data.data))
       this._route.navigate(['/home'])
     },error=>{
       console.log(error)

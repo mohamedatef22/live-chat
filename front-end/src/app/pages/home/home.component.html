@@ -1,9 +1,12 @@
-<section class="container my-5">
-    <div class="row">
-        <div class="col-2">
-            <button class="btn btn-primary" routerLink="/company/add"> add company </button>
-        </div>
+<section *ngIf="type;else elseSection" class="container my-5">
+  <div class="row">
+    <div class="col-2">
+      <button class="btn btn-primary" routerLink="/company/add"> add company </button>
     </div>
+  </div>
+  <app-company [flag]="true"></app-company>
 </section>
 
-<app-company [flag]="true"></app-company>
+<ng-template #elseSection>
+  MyCompany
+</ng-template>

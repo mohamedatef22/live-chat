@@ -211,6 +211,7 @@ router.post('/login',async (req,res)=>{
         })
         return
     } catch (e) {
+      console.log(e);
         res.status(500).send({
             status:"5",
             data:e,
