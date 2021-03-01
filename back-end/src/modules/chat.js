@@ -30,6 +30,13 @@ const Chat = mongoose.model('Chat',{
     ],
     reported:{
         type:Boolean
+    },
+    customerSocketId:{
+        type:String,
+        required:true
+    },
+    employeeSocketId:{
+        type:String
     }
 })
 

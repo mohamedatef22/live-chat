@@ -23,6 +23,8 @@ import { CompanyService } from './services/company.service';
 import { UserInterceptor } from './interceptors/user.interceptor';
 import { AddEmployeeComponent } from './pages/add-employee/add-employee.component';
 import { AddCompanyComponent } from './pages/add-company/add-company.component';
+import { ChatComponent } from './pages/chat/chat.component';
+import { NotFoundComponent } from './pages/not-found/not-found.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -37,7 +39,9 @@ import { AddCompanyComponent } from './pages/add-company/add-company.component';
     ManagerComponent,
     EmployeeComponent,
     AddEmployeeComponent,
-    AddCompanyComponent
+    AddCompanyComponent,
+    ChatComponent,
+    NotFoundComponent
   ],
   imports: [
     BrowserModule,

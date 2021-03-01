@@ -4,6 +4,41 @@ const Chat = require("../modules/chat");
 const User = require("../modules/user");
 const auth = require("../middleware/auth");
 
+
+// router.post("/chat/:id/start", auth, async (req, res) => {
+//   try {
+//     const chat = await Chat.findById(req.params.id);
+//     if (!chat) {
+//       res.status(400).send({
+//         status: "4",
+//         data: {},
+//         msg: "not found",
+//       });
+//       return;
+//     }
+//     /* required check auth for chating with this user */
+//     chat.employee_id = req.data._id;
+//     chat.start_time = new Date();
+//     await chat.save();
+//     res.status(200).send({
+//       status: "2",
+//       data: chat,
+//       msg: "chat started",
+//     });
+//     return;
+//   } catch (e) {
+//     res.status(500).send({
+//       status: "5",
+//       data: e,
+//       msg: "can't start chat",
+//     });
+//     return;
+//   }
+// });
+
+
+module.exports = function(io){
+  
 /// tested: get chat for employee, auth for only employee
 router.get("/chat/:id/employee", auth, async (req, res) => {
   try {
@@ -102,6 +137,8 @@ router.post("/chat/:id/employee/message", auth, async (req, res) => {
       sender: true,
     });
     await chat.save();
+    console.log(chat.customerSocketId,'emp')
+    io.of('/connectMe').to(chat.customerSocketId).emit('new-message',chat.messages)
     res.status(200).send({
       status: "2",
       data: chat,
@@ -134,6 +171,8 @@ router.post("/chat/:id/customer/message", async (req, res) => {
       ...req.body,
       sender: false,
     });
+    console.log(chat.employeeSocketId);
+    io.of('/connectMe').to(chat.employeeSocketId).emit('new-message',chat.messages)
     await chat.save();
     res.status(200).send({
       status: "2",
@@ -242,37 +281,6 @@ router.post("/chat/:id/end", async (req, res) => {
     return;
   }
 });
-
-// router.post("/chat/:id/start", auth, async (req, res) => {
-//   try {
-//     const chat = await Chat.findById(req.params.id);
-//     if (!chat) {
-//       res.status(400).send({
-//         status: "4",
-//         data: {},
-//         msg: "not found",
-//       });
-//       return;
-//     }
-//     /* required check auth for chating with this user */
-//     chat.employee_id = req.data._id;
-//     chat.start_time = new Date();
-//     await chat.save();
-//     res.status(200).send({
-//       status: "2",
-//       data: chat,
-//       msg: "chat started",
-//     });
-//     return;
-//   } catch (e) {
-//     res.status(500).send({
-//       status: "5",
-//       data: e,
-//       msg: "can't start chat",
-//     });
-//     return;
-//   }
-// });
-
-
-module.exports = router;
+return router;
+}
+// router;

@@ -10,3 +10,8 @@
 <ng-template #elseSection>
   MyCompany
 </ng-template>
+
+<input type="text" #ref>
+<button (click)="sendMessage(ref.value)">Send Message</button>
+
+<button (click)='serve()'>serve</button>

@@ -17,12 +17,12 @@ export class CompanyService {
     return this._http.get(`${this.BASE_URL}/c/view/${id}`)
   }
 
-  serveCustomer(id):Observable<any>{
-    return this._http.get(`${this.BASE_URL}/c/live/${id}`)
+  serveCustomer(id,socketId):Observable<any>{
+    return this._http.post(`${this.BASE_URL}/c/e/live/${id}`,{socketId:socketId})
   }
 
   addCustomer(form,id):Observable<any>{
-    return this._http.post(`${this.BASE_URL}/c/live/${id}`,form)
+    return this._http.post(`${this.BASE_URL}/c/c/live/${id}`,form)
   }
 
   getCompanies():Observable<any>{
